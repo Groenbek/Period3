@@ -1,0 +1,67 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+import React, { useState } from "react";
+import {IFriend} from "../interfaces/IFriend"
+
+type AddFriendProps = {
+  initialFriend? : IFriend,
+  allowEdit: true
+}
+
+interface IKeyableFriend extends IFriend{
+  [key: string]: any
+}
+
+interface FriendData {
+  getAllFriends : IFriend[]
+}
+
+const AddFriend = ({ initialFriend, allowEdit }: AddFriendProps) => {
+  const EMPTY_FRIEND:IFriend = { firstName: "", lastName: "", password: "OTHER", email: "" }
+  let newFriend = initialFriend ? initialFriend : { ...EMPTY_FRIEND }
+
+  const [friend, setFriend] = useState({ ...newFriend })
+  const [readOnly, setReadOnly] = useState(!allowEdit)
+
+  const handleChange = (event:React.FormEvent<HTMLInputElement>) => {
+    const i = event.currentTarget.id;
+    var friendToChange: IKeyableFriend = {...friend};
+    friendToChange[i] = event.currentTarget.value;
+    setFriend({ ...friendToChange })
+  }
+  const handleSubmit = (event:React.FormEvent) => {
+    event.preventDefault();
+    //Todo
+    alert(JSON.stringify(friend))
+    setFriend({ ...EMPTY_FRIEND })
+  }
+
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        FirstName<br/>
+        <input type="text" readOnly={readOnly} id="firstName" value={friend.firstName} onChange={handleChange} />
+      </label>
+      <br />
+      <label>
+       LastName <br/>
+        <input readOnly={readOnly} type="text" id="lastName" value={friend.lastName} onChange={handleChange} />
+      </label>
+      <br />
+      <label>
+        Email <br/>
+          <input readOnly={readOnly} type="email" id="age" value={friend.email} onChange={handleChange} />
+      </label>
+      <br/>
+      <label>
+        Email <br/>
+          <input readOnly={readOnly} type="password" id="password" value={friend.password} onChange={handleChange} />
+      </label>
+      <br /><br/>
+      {!readOnly && <input type="submit" value="Submit" />}
+    </form>
+  );
+}
+
+export default AddFriend;
